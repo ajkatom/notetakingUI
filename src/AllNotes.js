@@ -14,6 +14,8 @@ const AllNotes_Query = gql`
   }
 `;
 
+
+
 const AllNotes = () => {
   const { loading, error, data } = useQuery(AllNotes_Query);
   if (loading) return '...loading';

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { notify } from 'react-notify-toast';
 
 const AllNotes_Query = gql`
   {
@@ -14,8 +15,28 @@ const AllNotes_Query = gql`
   }
 `;
 
+const Delete_Note = gql`
+  mutation deleteNote($id: ID) {
+    deleteNote(id: $id) {
+      title
+      content
+      id
+    }
+  }
+`;
+
 const AllNotes = () => {
   const { loading, error, data } = useQuery(AllNotes_Query);
+  const [deleteNote] = useMutation(Delete_Note, {
+    update(cache, { data: { deleteNote } }) {
+      const { allNotes } = cache.readQuery({ query: AllNotes_Query });
+      const notes = allNotes.filter(note => note.id !== deleteNote.id);
+      cache.writeQuery({
+        query: AllNotes_Query,
+        data: { allNotes: notes },
+      });
+    },
+  });
   if (loading) return '...loading';
   if (error) return `Error!! ${error.message}`;
   return (
@@ -39,9 +60,16 @@ const AllNotes = () => {
                   <Link to={`note/${note.id}`} className="card-footer-item">
                     Edit
                   </Link>
-                  <a href="#" className="card-footer-item">
+                  <button
+                    onClick={e => {
+                      e.preventDefault();
+                      deleteNote({ variables: { id: note.id } });
+                      notify.show('Note Deleted!!', 'success');
+                    }}
+                    className="card-footer-item"
+                  >
                     Delete
-                  </a>
+                  </button>
                 </footer>
               </div>
             </div>

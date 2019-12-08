@@ -83,7 +83,7 @@ const NewNote = withRouter(({ history }) => {
           </div>
           <div className="field">
             <div className="control">
-              <button classname="button is-link">Save</button>
+              <button className="button is-link">Save</button>
             </div>
           </div>
         </form>

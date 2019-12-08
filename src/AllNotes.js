@@ -14,8 +14,6 @@ const AllNotes_Query = gql`
   }
 `;
 
-
-
 const AllNotes = () => {
   const { loading, error, data } = useQuery(AllNotes_Query);
   if (loading) return '...loading';
@@ -38,7 +36,7 @@ const AllNotes = () => {
                   </div>
                 </div>
                 <footer className="card-footer">
-                  <Link to={`note ${note.id}`} className="card-footer-item">
+                  <Link to={`note/${note.id}`} className="card-footer-item">
                     Edit
                   </Link>
                   <a href="#" className="card-footer-item">
